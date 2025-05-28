@@ -2,34 +2,49 @@
 
 import React from 'react';
 import { ethers } from 'ethers';
-// import contractAbi from '../lib/contractAbi.json';
+import contractAbi from "@/libs/contract.json";
+import { Log } from '@/types/Log';
+import LogList from '@/components/LogList';
 
-const CONTRACT_ADDRESS = '0xYourDeployedContractAddressHere';
+const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
-type Log = {
-  sender: string,
-  message: string,
-  timestamp: string
+declare global {
+  interface Window {
+    ethereum?: ethers.Eip1193Provider
+  }
 }
 
 export default function Home() {
-  const [provider, setProvider] = React.useState<ethers.BrowserProvider | null>(null);
-  const [signer, setSigner] = React.useState<ethers.Signer | null>(null);
+  // const [provider, setProvider] = React.useState<ethers.BrowserProvider | null>(null);
+  // const [signer, setSigner] = React.useState<ethers.Signer | null>(null);
   const [contract, setContract] = React.useState<ethers.Contract | null>(null);
   const [message, setMessage] = React.useState<string>('');
   const [logs, setLogs] = React.useState<Log[]>([]);
 
+  // React.useEffect(() => {
+  //   if (typeof window !== 'undefined' && window.ethereum) {
+  //     const ethProvider = new ethers.BrowserProvider(window.ethereum);
+  //     ethProvider.getSigner().then((sig) => {
+  //       // setProvider(ethProvider);
+  //       // setSigner(sig);
+  //       const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
+  //       const logContract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, sig);
+  //       setContract(logContract);
+  //     });
+  //   }
+  // }, []);
+
+
   React.useEffect(() => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const ethProvider = new ethers.BrowserProvider(window.ethereum);
-      ethProvider.getSigner().then((sig) => {
-        setProvider(ethProvider);
-        setSigner(sig);
-        const logContract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, sig);
-        setContract(logContract);
-      });
-    }
+    const setup = async () => {
+      const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+      const signer = await provider.getSigner(0);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi, signer);
+      setContract(contract);
+    };
+    setup();
   }, []);
+
 
   const fetchLogs = async () => {
     if (!contract) return;
@@ -82,15 +97,7 @@ export default function Home() {
         🔄 Refresh Logs
       </button>
 
-      <ul>
-        {logs.map((log, idx) => (
-          <li key={idx} className="border p-3 rounded mb-2">
-            <p><strong>📨 {log.sender}</strong></p>
-            <p>{log.message}</p>
-            <p className="text-xs text-gray-500">🕒 {log.timestamp}</p>
-          </li>
-        ))}
-      </ul>
+      <LogList logs={logs}/>
     </main>
   );
 }
