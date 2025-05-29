@@ -30,7 +30,7 @@ const LogList: React.FC<Logs> = ({ logs }) => {
                             </td>
                         </tr>
                     ))
-                    }
+                    }  
                 </tbody>
             </table>
         </div>

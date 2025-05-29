@@ -45,7 +45,6 @@ export default function Home() {
     setup();
   }, []);
 
-
   const fetchLogs = async () => {
     if (!contract) return;
     const count = await contract.getAllLogsCount();
