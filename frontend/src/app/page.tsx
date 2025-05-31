@@ -4,7 +4,7 @@ import React from 'react';
 import { ethers } from 'ethers';
 import contractAbi from "@/libs/contract.json";
 import { Log } from '@/types/Log';
-import LogList from '@/components/LogList';
+import LogList from '@/components/form/LogList';
 
 const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
