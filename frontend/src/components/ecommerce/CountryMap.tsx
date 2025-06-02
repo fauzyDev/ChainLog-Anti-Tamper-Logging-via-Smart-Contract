@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 const VectorMap = dynamic(
   () => import("@react-jvectormap/core").then((mod) => mod.VectorMap),
   { ssr: false }
-);
+);  
 
 // Define the component props
 interface CountryMapProps {
